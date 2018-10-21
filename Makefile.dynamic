@@ -1,0 +1,6 @@
+search_pcap:search_pcap.o
+	gcc -o search_pcap search_pcap.o -lpcap
+search_pcap.o:search_pcap.c GRE.h
+	gcc -g -std=c99 -Wall -D_GNU_SOURCE -c search_pcap.c -lpcap
+clean:
+	rm -rf *.o search_pcap

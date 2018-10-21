@@ -1,0 +1,56 @@
+Search Tool v0.2.4
+
+usage[1]: ./search_pcap [file.pcap] [flags] [file.txt]
+   or[2]: ./search_pcap [file.pcap] [flags] [flags value]
+
+   eg[1]: ./search_pcap 123.pcap f input.txt
+   eg[2]: ./search_pcap 123.pcap m 33
+   eg[3]: ./search_pcap 123.pcap i 460079147300106
+   eg[4]: ./search_pcap 123.pcap M 8614714730106
+
+Flags(必选+功能):
+	必选【f,m,I,M】file message_type IMSI MSISDN
+	f	读取file.txt内的teid+ip组，以该文件内隧道信息作为条件进行隧道学习开展后续过滤  (需要手动设置过滤循环次数，参考下列选项“有条件选项”)
+	m   使用Message Type作为首轮过滤条件，筛选其内的所有teid(+ip),后根据筛选出的条件进行相关过滤 
+		(若type为create session request，则设置循环过滤一遍)
+    I   使用Imsi作为首轮过滤条件	(默认设置循环过滤一遍)
+    M   使用Msisdn作为首轮过滤条件  (默认设置循环过滤一遍)
+	
+	可选功能项(1)【t,i】teid ip
+    t   仅使用file.txt里的teid作为过滤条件
+	i 	仅使用file.txt里的ip作为过滤条件
+	【t,i选项都不选默认teid+ip过滤，t，i不可同时选】
+	
+	可选功能项(2)【n】not 搭配选项【m,I,M】使用
+	n 	表示单纯滤【m,I,M】选项指定类型报文，不进行学习隧道信息过滤
+	
+	可选功能项(3)【p】part
+	p 	
+	
+	有条件选项【c，u】条件:读取文件过滤，搭配选项【f】使用。若对默认选项的过滤次数认为不合理，可以加【c，u】选项设置过滤次数。
+    c   信令面teid+ip过滤选项，如sgw_c,pgw_c 设置后循环滤两遍
+	u 	用户面teid+ip过滤选项，如sgw_u,pgw_u 设置后循环滤三遍
+	
+    PS: 1.选项s c u 三选一 (s表示过滤一轮)
+        2.选项m i M 三选一
+        3.选项t c 可自行添加组合。当flags内含2类选项(m i M)时，请使用第二条命令格式[2]
+        4.t 选项未选默认使用teid+ip组合过滤
+        5.c 选项未选默认直接把过滤结果存入一个大包，不再细分过滤
+
+Input file格式:
+teid1 ip1
+teid2 ip2
+
+输出文件：
+    u(t)    输出：file.pcap_input.txt_1(2).pcap(.txt)【1】
+    uc      输出:【1】+teid1_ip1_1(2).pcap(.txt)+teid2_ip2_1(2).pcap(txt)
+    um      输出：file.pcap_MessageType_MESSTYPE.pcap(.txt)
+                  file.pcap_MessageType_1(2).pcap(.txt)      【2】
+    umc     输出：【2】+teid1_ip1_1(2).pcap(.txt)+teid2_ip2_1(2).pcap(.txt) 
+            注：此处的teid1+ip1,teid2+ip2均为file.pcap_MessageType_MESSTYPE.txt内的数据
+
+输出文件(添)   log_123.pcap_flag value 文件含两部分内容如下:
+1:create session response 内的s1-sgw-gtp-u的隧道teid+ip
+2:可用于tshark过滤的条件字符串
+
+

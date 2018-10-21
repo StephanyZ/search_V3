@@ -1,0 +1,11 @@
+[modify.pkt = 1]
+msg_type = 32
+imsi = 530111234567890
+imei = 35571123456789016
+msisdn = 8618861812869
+s5_sgw_c.ip = 221.177.10.22
+s5_sgw_c.teid = 0x11223344
+plmnid = 53011
+tac = 0x4c00
+ci = 0x9c32
+[end]

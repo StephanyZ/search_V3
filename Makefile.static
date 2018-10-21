@@ -1,0 +1,13 @@
+CC = gcc
+CFLAG = -g -std=c99 -Wall -D_GNU_SOURCE
+LIBPATH = ./lib/
+
+OBJ = search_pcap.o
+SRC = search_pcap.c GRE.h
+
+search_pcap_static:search_pcap.o
+	gcc -o search_pcap_static search_pcap.o ./lib/libpcap.a
+search_pcap.o:search_pcap.c GRE.h
+	gcc -g -std=c99 -Wall -D_GNU_SOURCE -c search_pcap.c ./lib/libpcap.a
+clean:
+	rm -rf *.o search_pcap
